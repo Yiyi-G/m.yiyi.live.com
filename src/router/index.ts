@@ -1,14 +1,20 @@
-import Vue from 'vue'
-import Router from 'vue-router'
-import KeepFitMain from "../page/KeepFitMain"
+import Vue from "vue"
+import Router from "vue-router"
+import FitMain from "../page/KeepFitMain.vue"
+import AddDiary from "../page/AddDiary.vue"
 
 Vue.use(Router);
-
 export default new Router({
-    routers:[{
-        path:"/fit_main",
-        name:"fit_main",
-        component:KeepFitMain,
-        alias:'fit_main'
-    }]
+    routes: [
+    {
+        name: "addDiary",
+        path: "/",
+        component: AddDiary
+    },
+    {
+        name: "fit_main",
+        path: "/main",
+        component: FitMain
+    },]
+
 })
