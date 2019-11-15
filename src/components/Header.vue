@@ -1,28 +1,27 @@
 <template>
-  <van-nav-bar title="Live" left-text="返回" left-arrow @click-right="onClickRight">
-    <van-icon name="search" slot="right" v-show="showSearchIcon" />
+<div>
+  <van-nav-bar title="Live" left-text="返回" :left-arrow="!home">
+    <van-icon name="wap-home-o" slot="left" v-if="home" size="20px"/>
+    <van-icon name="search" slot="right" size="20px" v-show="showSearchIcon" @click="onClick"/>
     <van-search
-
+      v-model="value"
       placeholder="请输入搜索关键词"
       slot="right"
-      show-action
+      :show-action="true"
+      v-show="showSearchItem"
       @search="onSearch"
       @cancel="onCancel"
-      v-show="showSearchItem"
     />
   </van-nav-bar>
+</div>
 </template>
 
 <script lang='ts'>
 import { Component, Prop, Vue } from "vue-property-decorator";
 import { NavBar } from "vant";
-import "vant/lib/nav-bar/style";
 import { Icon } from "vant";
-import "vant/lib/icon/style";
 import { Toast } from "vant";
-import "vant/lib/toast/style";
 import { Search } from "vant";
-import "vant/lib/search/style";
 
 Vue.use(NavBar);
 Vue.use(Icon);
@@ -31,21 +30,19 @@ Vue.use(Search);
 
 @Component
 export default class Header extends Vue {
+  @Prop({default:false}) home!:boolean 
   showSearchIcon = true;
   showSearchItem = false;
 
-  onClickRight(): void {
+  onClick(): void {
     this.showSearchIcon = false;
     this.showSearchItem = true;
   }
   onCancel(): void {
-    Toast("kk");
     this.showSearchIcon = true;
     this.showSearchItem = false;
   }
   onSearch(): void {
-      this.showSearchIcon = true;
-    this.showSearchItem = false;
   }
 }
 </script>
