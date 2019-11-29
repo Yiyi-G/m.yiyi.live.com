@@ -43,9 +43,12 @@
   </van-list>
 </template>
 <script lang='ts'>
-import { Component, Prop, Vue, ProvideReactive } from "vue-property-decorator";
+import { Component, Prop, Vue } from "vue-property-decorator";
 import { List, Cell, Divider, Image, Panel, CellGroup } from "vant";
 import {HttpClient,NetworkCallback} from "../Util/HttpRequestUtil";
+import DiaryItem from "../models/DiaryItem"
+import DailyFoodListItem from "../models/DailyFoodListItem"
+
 
 Vue.use(List);
 Vue.use(Cell);
@@ -61,7 +64,7 @@ export default class DiaryList extends Vue {
   error = false;
   start =0;
   limit = 10;
-  @Prop() list: DiaryItem[] = [];
+  @Prop({default:[]}) list!: DiaryItem[];
 
   OnLoadData(): void {
     this.GetData();
@@ -72,7 +75,7 @@ export default class DiaryList extends Vue {
       playerName: "10",
       passWord: "10"
     }; 
-    let client = new HttpClient("http://localhost:5000");
+    let client = new HttpClient("http://localhost:1111");
 
     let callback = new NetworkCallback(this.PushData);
     var url = `api/KeepFit?start=${this.start}&limit=${this.limit}`;
@@ -84,6 +87,7 @@ export default class DiaryList extends Vue {
     setTimeout(() => {
       for (let i = 0; i < data.length; i++) {
         let day = `减肥第${ data[i].num}天`;
+        let foods = data[i].foods;
         this.list.push(
           new DiaryItem(
             data[i].kid,
@@ -92,7 +96,7 @@ export default class DiaryList extends Vue {
             `${data[i].remark}`,
             `${data[i].date}`,
             data[i].imgs as string[],
-            [new DailyFoodListItem(1, 1, "早餐", "鸡蛋，粥", true, "8:00", [])],
+            foods,
            day
           )
         );
@@ -145,88 +149,5 @@ export default class DiaryList extends Vue {
   
 }
 
-class DailyFoodListItem {
-  id: number;
-  kfid: number;
-  title: string;
-  foods: string;
-  is_main: boolean;
-  eat_time: string;
-  imgs: string[];
-  constructor(
-    id: number,
-    kfid: number,
-    title: string,
-    foods: string,
-    is_main: boolean,
-    eat_time: string,
-    imgs: string[]
-  ) {
-    this.id = id;
-    this.kfid = kfid;
-    this.title = title;
-    this.foods = foods;
-    this.is_main = is_main;
-    this.eat_time = eat_time;
-    this.imgs = imgs;
-  }
-}
-class DiaryItem {
-  kid: number;
-  weight: number;
-  measure_time: string;
-  remark: string;
-  date: string;
-  imgs: string[];
-  foods: DailyFoodListItem[];
-  day: string;
 
-  private readonly _ImgUrlHead ="http://localhost:5000/api/Image?fid=";
-
-  constructor(
-    kid: number,
-    weight: number,
-    measure_time: string,
-    remark: string,
-    date: string,
-    imgs: string[],
-    foods: DailyFoodListItem[],
-    day: string
-  ) {
-    this.kid = kid;
-    this.weight = weight;
-    this.measure_time = measure_time;
-    this.remark = remark;
-    this.date = date;
-    this.foods = foods;
-    this.imgs = [];
-    this.day = day;
-    if (imgs != null && imgs != undefined) {
-      imgs.forEach(element => {
-        this.imgs.push(`${this._ImgUrlHead+ element}`);
-      });
-    }
-    this.foods = [];
-    if (foods != null && foods != null) {
-      foods.forEach(e => {
-        this.foods.push(
-          new DailyFoodListItem(
-            e.id,
-            e.kfid,
-            e.title,
-            e.foods,
-            e.is_main,
-            e.eat_time,
-            e.imgs
-          )
-        );
-        if (e.imgs != null && e.imgs != undefined) {
-          e.imgs.forEach(element => {
-            this.imgs.push(`${this._ImgUrlHead+ element}`);
-          });
-        }
-      });
-    }
-  }
-}
 </script>

@@ -6,15 +6,16 @@ import AddDiary from "../page/AddDiary.vue"
 Vue.use(Router);
 export default new Router({
     routes: [
+        {
+            name: "fit_main",
+            path: "/main",
+            component: FitMain
+        },
     {
         name: "addDiary",
         path: "/",
         component: AddDiary
     },
-    {
-        name: "fit_main",
-        path: "/main",
-        component: FitMain
-    },]
+    ]
 
 })
